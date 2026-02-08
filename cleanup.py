@@ -9,6 +9,8 @@ def cleanup():
     with engine.begin() as conn:
         print("Dropping objects...")
         conn.execute(text("DROP TABLE IF EXISTS challenge CASCADE;"))
+        conn.execute(text("DROP TABLE IF EXISTS subcategory CASCADE;"))
+        conn.execute(text("DROP TABLE IF EXISTS category CASCADE;"))
         conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE;"))
         conn.execute(text("DROP TYPE IF EXISTS category CASCADE;"))
     print("Cleanup complete.")
