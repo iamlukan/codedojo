@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: reflex
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: codedojo
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U reflex" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://reflex:password@db:5432/codedojo
+    volumes:
+      - .:/app
+    # Overwrite command for dev to ensure hot reload works with volume mount
+    command: reflex run --env dev --backend-host 0.0.0.0
+
+volumes:
+  postgres_data:

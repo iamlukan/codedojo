@@ -1,0 +1,14 @@
+[project]
+name = "code-dojo"
+version = "0.1.0"
+description = "Code Dojo - A Reflex App"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "reflex>=0.6.7",
+    "sqlmodel>=0.0.14",
+    "psycopg2-binary>=2.9.9",
+]
+
+[tool.uv]
+package = true
