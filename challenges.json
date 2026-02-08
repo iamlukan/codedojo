@@ -1,0 +1,38 @@
+[
+    {
+        "category": "Cisco",
+        "prompt": "Configure the hostname to 'Router1'.",
+        "solution_source": "hostname Router1",
+        "difficulty": 1
+    },
+    {
+        "category": "Cisco",
+        "prompt": "Enter global configuration mode.",
+        "solution_source": "configure terminal",
+        "difficulty": 1
+    },
+    {
+        "category": "Python",
+        "prompt": "Print 'Hello, CodeDojo!' to the console.",
+        "solution_source": "print('Hello, CodeDojo!')",
+        "difficulty": 1
+    },
+    {
+        "category": "Python",
+        "prompt": "Create a list named 'fruits' with 'apple' and 'banana'.",
+        "solution_source": "fruits = ['apple', 'banana']",
+        "difficulty": 1
+    },
+    {
+        "category": "Shell",
+        "prompt": "List all files in the current directory including hidden ones.",
+        "solution_source": "ls -la",
+        "difficulty": 2
+    },
+    {
+        "category": "Docker",
+        "prompt": "Run a hello-world container.",
+        "solution_source": "docker run hello-world",
+        "difficulty": 1
+    }
+]

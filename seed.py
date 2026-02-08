@@ -2,54 +2,59 @@ import reflex as rx
 from code_dojo.models import Challenge, Category
 from sqlmodel import Session, create_engine, select
 import os
+import json
 
 # Ensure this matches your rxconfig or docker-compose env
 DB_URL = os.getenv("DATABASE_URL", "postgresql://reflex:password@localhost:5434/codedojo")
 
 def seed():
+    json_file = "challenges.json"
+    if not os.path.exists(json_file):
+        print(f"Error: {json_file} not found.")
+        return
+
+    try:
+        with open(json_file, 'r') as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        return
+
+    print(f"Loaded {len(data)} challenges from JSON.")
+
     engine = create_engine(DB_URL)
     
     with Session(engine) as session:
-        # Check if we already have data
-        existing = session.exec(select(Challenge)).first()
-        if existing:
-            print("Database already populated.")
-            return
+        new_count = 0
+        for item in data:
+            # Check for existing challenge by prompt
+            existing = session.exec(
+                select(Challenge).where(Challenge.prompt == item['prompt'])
+            ).first()
+            
+            if existing:
+                print(f"Skipping duplicate: {item['prompt'][:30]}...")
+                continue
+            
+            try:
+                # Convert string category to Enum
+                category_enum = Category(item['category'])
+                
+                challenge = Challenge(
+                    category=category_enum,
+                    prompt=item['prompt'],
+                    solution_source=item['solution_source'],
+                    difficulty=item['difficulty']
+                )
+                session.add(challenge)
+                new_count += 1
+                print(f"Adding: [{category_enum.value}] {item['prompt'][:30]}...")
+            except ValueError:
+                print(f"Error: Invalid category '{item['category']}' for prompt '{item['prompt']}'")
+                continue
 
-        print("Seeding database...")
-        challenges = [
-            Challenge(
-                category=Category.CISCO, 
-                prompt="Configure the hostname to 'Router1'.", 
-                solution_hash="hostname Router1", 
-                difficulty=1
-            ),
-            Challenge(
-                category=Category.PYTHON, 
-                prompt="Print 'Hello, CodeDojo!' to the console.", 
-                solution_hash="print('Hello, CodeDojo!')", 
-                difficulty=1
-            ),
-            Challenge(
-                category=Category.SHELL, 
-                prompt="List all files in the current directory including hidden ones.", 
-                solution_hash="ls -la", 
-                difficulty=2
-            ),
-            Challenge(
-                category=Category.DOCKER, 
-                prompt="Run a hello-world container.", 
-                solution_hash="docker run hello-world", 
-                difficulty=1
-            )
-        ]
-        
-        for ch in challenges:
-            session.add(ch)
-            print(f"Added: [{ch.category}] {ch.prompt}")
-        
         session.commit()
-        print("Seeding complete!")
+        print(f"\nSeeding complete! {new_count} new questions imported.")
 
 if __name__ == "__main__":
     seed()

@@ -12,5 +12,5 @@ class Category(str, Enum):
 class Challenge(rx.Model, table=True):
     category: Category
     prompt: str
-    solution_hash: str
+    solution_source: str
     difficulty: int
