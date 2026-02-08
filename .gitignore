@@ -1,6 +1,23 @@
-.states
+# Core dumps
+core.*
+
+# Python
 __pycache__/
-*.db
-.web
 *.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+
+# Reflex
+.web/
 assets/external/
+.states
+
+# Database
+*.db
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
