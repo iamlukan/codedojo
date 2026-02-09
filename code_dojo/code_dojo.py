@@ -132,7 +132,8 @@ def sidebar() -> rx.Component:
                                 )
                             )
                         )
-                    )
+                    ),
+                    value=cat.name
                 )
             ),
             width="100%",
